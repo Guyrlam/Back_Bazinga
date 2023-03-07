@@ -1,5 +1,6 @@
 import { model } from 'mongoose'
-import { IUser, userSchema } from '../schema/userSchema';
+import { userSchema } from '../schema/userSchema';
+import { IUser } from '../interface';
 
 class UserDB{
     user: any;
@@ -11,7 +12,7 @@ class UserDB{
             const data = await this.user.create(_data);
             return data;
         } catch (err: any) {
-            throw Error(err.message);
+            throw err;
         }
     }
     async getAll() {
@@ -19,7 +20,7 @@ class UserDB{
             const data = await this.user.find({});
             return data;
         } catch (err: any) {
-            throw Error(err.message);
+            throw err;
         }
     }
     async getByEmail(_email:string) {
@@ -27,7 +28,7 @@ class UserDB{
             const data = await this.user.find({ email: _email});
             return data;
         } catch (err: any) {
-            throw Error(err.message);
+            throw err;
         }
     }
     async getByNick(_nick:string) {
@@ -35,7 +36,15 @@ class UserDB{
             const data = await this.user.find({ nick: _nick});
             return data;
         } catch (err: any) {
-            throw Error(err.message);
+            throw err;
+        }
+    }
+    async removeId(_id:string) {
+        try {
+            const data = await this.user.deleteOne({ _id: _id });
+            return {message:"ok"};
+        } catch (err: any) {
+            throw err;
         }
     }
 }

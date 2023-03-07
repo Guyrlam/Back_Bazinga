@@ -1,6 +1,6 @@
 import { salt } from "../config";
+import { ILogin, IUser } from "../interface";
 import UserDB from "../models/user";
-import { IUser } from "../schema/userSchema";
 import bcrypt from 'bcrypt';
 const db = new UserDB();
 
@@ -19,7 +19,35 @@ class UserServ{
             const user = await db.register(_data)
             return user;
         } catch (err: any) {
-            return {errserv:err.message};
+            throw {err,status:400};
+        }
+    }
+    async login(_user:ILogin) {
+        try {
+            let user;
+            const findByEmail = await db.getByEmail(_user.email || "")
+            const findByNick = await db.getByNick(_user.nick || "")
+
+            if (findByEmail.length) {
+                user = findByEmail[0];
+            }else if (findByNick.length) {
+                user = findByNick[0];
+            } else {
+                if (_user.email) {
+                    throw new Error("Email não cadastrado")
+                }
+                if (_user.nick) {
+                    throw new Error("Nick não cadastrado")
+                }
+            }
+            let isEqualPassword = await comparePassword(_user.password, user.password);
+            if (isEqualPassword) {
+                return user;
+            } else {
+                throw new Error("Senha inválida")
+            }
+        } catch (err: any) {
+            throw {err,status:400};
         }
     }
     async getAll() {
@@ -27,7 +55,7 @@ class UserServ{
             const users = await db.getAll()
             return users;
         } catch (err: any) {
-            return {errserv:err.message};
+            throw {err,status:404};
         }
     }
 }

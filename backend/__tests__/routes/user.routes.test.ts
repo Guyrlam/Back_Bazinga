@@ -1,22 +1,38 @@
 import request from "supertest";
 
 import App from "../../src/app";
-const app = new App()
+import UserDB from "../../src/models/user";
+const app = new App();
+const db = new UserDB();
 describe("User routes", () => {
-  test("Get all users", async () => {
-    const res = await request(app.app).get("/api/users/12");
-    expect(res.body).toEqual({message:"#12"});
-  });
-  test("Get all users", async () => {
-    const res = await request(app.app).get("/api/users/12");
-    expect(res.body).toEqual({message:"#12"});
-  });
-  test("Get all users", async () => {
-    const res = await request(app.app).get("/api/users/12");
-    expect(res.body).toEqual({message:"#12"});
-  });
-  test("Get all users", async () => {
-    const res = await request(app.app).get("/api/users/12");
-    expect(res.body).toEqual({message:"#12"});
-  });
+    let id:string="";
+    test("POST-/api/users/register", async () => {
+        const res = await request(app.app).post("/api/users/register").send({
+            name: "user",
+            nick: "user",
+            email: "user@email.com",
+            password: "Password",
+        });
+        id=res.body._id
+        expect(res.statusCode).toEqual(200);
+    });
+    test("!!!LOGIN=/api/users/login", async () => {
+      const res = await request(app.app).post("/api/users/login").send({
+          email: "user@email.com",
+          password: "Password",
+      }); 
+      expect(res.statusCode).toEqual(200);
+    });
+    test("POST-/api/users/register ...Exist", async () => {
+        const res = await request(app.app).post("/api/users/register").send({
+            name: "user",
+            nick: "user",
+            email: "user@email.com",
+            password: "Password",
+        });
+        expect(res.body).toEqual({
+            message: "Este email já esta cadastrado",
+        });
+        await db.removeId(id);
+    });
 });

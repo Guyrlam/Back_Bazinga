@@ -1,11 +1,5 @@
 import { Schema } from 'mongoose';
-interface IUser {
-  name: string;
-  nick: string;
-  email: string;
-  password: string;
-  avatar?: string;
-}
+import { IUser } from '../interface';
 const userSchema = new Schema<IUser>({
   name: { type: String, required: true },
   nick: { type: String, required: true, unique: true },
@@ -13,4 +7,4 @@ const userSchema = new Schema<IUser>({
   password: { type: String, required: true },
   avatar: String
 });
-export {userSchema,IUser}
+export {userSchema}

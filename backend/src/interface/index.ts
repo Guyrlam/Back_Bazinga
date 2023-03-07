@@ -1,0 +1,1 @@
+export {ILogin,IUser} from './IUser'
