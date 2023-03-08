@@ -16,7 +16,7 @@ describe("User routes", () => {
         id=res.body._id
         expect(res.statusCode).toEqual(200);
     });
-    test("!!!LOGIN=/api/users/login", async () => {
+    test("POST=/api/users/login", async () => {
       const res = await request(app.app).post("/api/users/login").send({
           email: "user@email.com",
           password: "Password",

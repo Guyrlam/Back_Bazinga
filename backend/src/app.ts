@@ -10,7 +10,7 @@ import { RedisClientType, createClient } from "redis";
 
 // Initialize client.
 let redisClient: RedisClientType = createClient({
-    url: "redis://localhost:6379",
+    url: urlRedis,
 });
 redisClient.connect();
 
@@ -28,7 +28,7 @@ export default class App {
         this.session();
         this.routes(); 
 
-        this.app.listen(port, () =>
+        this.app.listen(4000, () =>
             console.log(`Servidor rodando em: http://localhost:${port}`)
         );
     }
