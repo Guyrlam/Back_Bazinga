@@ -4,6 +4,9 @@ import {EmailValidator} from "../helpers/validator"
 import { LoginValidator, UserValidator } from "../validators/user";
 import { ILogin, IUser } from "../interface";
 import APIResponse from "../util/apiResponse";
+import jwt from "jsonwebtoken";
+import { salt } from "../config";
+import { CustomRequest } from "../interface/IRequest";
 const service = new UserServ();
 const apiResponse = new APIResponse()
 
@@ -23,16 +26,20 @@ class UserControl{
     async login(req: Request, res: Response) {
         const userdata: ILogin = req.body;
         try {
-            const sess:any = req.session;
-            const { nick,email, password } = userdata;
             validateLogin(userdata)
-            const dt = await service.login(userdata)
-            if (dt) {
-                if (nick) sess.nick = nick;
-                if (email) sess.email = email;
-                sess.password = password;
-            }
-            res.json(dt)
+            const user: IUser = await service.login(userdata)
+            
+            const token = jwt.sign({
+                _id: user._id,
+                name: user.name,
+                nick: user.nick,
+                email: user.email
+            }, salt, { expiresIn: '1h' })
+            
+            res.json({
+                auth: true,
+                token: token
+            });
         } catch (err: any) {
             console.log(err);
             
@@ -40,20 +47,16 @@ class UserControl{
         }
     }
     async getUsers(req: Request, res: Response) {
+        const header: any = req.header;
         try {
-            const sess:any = req.session;
-            if (sess.email || sess.nick) {
-                const data:ILogin = {
-                    password: sess.password,
-                    email: sess.email,
-                    nick: sess.nick
-                }
-                const dt = await service.login(data)
-                res.json(dt)
+            if ((req as CustomRequest).token) {
+                const dt = await service.getAll();
+                res.json({dt,token:(req as CustomRequest).token});
             } else {
                 throw {err:new Error('Não Autorizado'), status:401}
             }
         } catch (err: any) {
+            console.log(header['Authorization'])
             console.log(err);
             apiResponse.error(res,err.err,err.status)
         }
