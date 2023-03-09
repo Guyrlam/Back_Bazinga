@@ -37,4 +37,4 @@ jobs:
       - run: cd backend
       - run: cd backend && npm install
       - run: cd backend && npm run build
-      - run: cd backend && npm run test
+      - run: cd backend && npm run test:ci
