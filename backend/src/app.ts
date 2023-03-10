@@ -52,5 +52,6 @@ export default class App {
 
     routes() {
         this.app.use(route.users);
+        this.app.use(route.posts);
     }
 }
