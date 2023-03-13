@@ -35,4 +35,4 @@ jobs:
         run: npm run build
       - name: Test Application
         working-directory: ./backend
-        run: npm run test
+        run: npm run test:ci

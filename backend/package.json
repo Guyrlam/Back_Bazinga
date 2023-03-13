@@ -8,7 +8,7 @@
     "start": "npx tsc & node ./dist/server.js",
     "build": "npx tsc",
     "test": "jest --coverage",
-    "test:ci": "jest --ci --coverage --coverageReporters=html --coverageReporters=lcov",
+    "test:ci": "jest --ci --coverage --coverageReporters=html --coverageReporters=lcov --detectOpenHandles --forceExit",
     "prettier-staged": "lint-staged"
   },
   "author": "",
