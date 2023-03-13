@@ -75,6 +75,7 @@ class PostControl{
             post.id_creator=token._id
             validatePost(post);
             const dt = await service.create(post);
+            (req as CustomRequest).io.emit("post", dt);
             res.json(dt);
         } catch (err: any) {
             console.log(err);

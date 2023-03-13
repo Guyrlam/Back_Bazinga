@@ -1,10 +1,11 @@
 import { Router } from "express";
 import {postCtrl} from "../controller";
 import { auth } from "../middleware/auth";
-
+import PostDB from "../models/post";
+import { CustomRequest } from "../interface/IRequest";
+const db = new PostDB();
 const ctrl = new postCtrl();
 const route = Router();
-
 route.post('/api/posts', auth, ctrl.create);
 route.get('/api/posts', auth, ctrl.getAll);
 route.get('/api/posts/:id', auth, ctrl.getId);
