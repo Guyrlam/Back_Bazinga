@@ -13,31 +13,32 @@ jobs:
         mongodb-version: ['6.0']
         redis-version: [6]
     steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3.6.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '18.x'
 
-      - name: Start Redis
+      - name: Redis Server in GitHub Actions
         uses: supercharge/redis-github-action@1.5.0
         with:
-          redis-version: ${{ matrix.redis-version }}
+          redis-version: '6'
           redis-port: 6379
 
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.8.0
+      - name: MongoDB in GitHub Actions
+        uses: supercharge/mongodb-github-action@1.9.0
         with:
-          mongodb-version: ${{ matrix.mongodb-version }}
-          mongodb-replica-set: test-rs
+          mongodb-version: '6.0'
           mongodb-port: 27017
-          
-      - run: cd backend
+
+      
       - name: Install Package
-        run: cd backend && npm install
+        working-directory: ./backend
+        run: npm install
       - name: Build Application
-        run: cd backend && npm run build
+        working-directory: ./backend
+        run: npm run build
       - name: Test Application
-        run: cd backend && npm run test
+        working-directory: ./backend
+        run: npm run test
