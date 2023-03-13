@@ -9,7 +9,7 @@ class PostServ{
         try {
             const post = await db.removePost(post_id, id);
             return post;
-        } catch (err: any) {
+        } catch (err: any) { 
             throw {err,status:400};
         }
     }
