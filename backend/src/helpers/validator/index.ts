@@ -7,5 +7,6 @@ export {
     PasswordValidator,
     NameValidator,
     UUIDValidator,
-    NickValidator
+    NickValidator,
+    ContentValidator
 } from './strings';

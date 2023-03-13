@@ -1,7 +1,7 @@
 import { RegexValidator } from './regex-validator';
 
-export class NickValidator extends RegexValidator {
+export class ContentValidator extends RegexValidator {
     protected override get regexp() {
-        return /^[a-zA-Z0-9]\w*$/gm;
+        return /\b\w/gim;
     }
 }

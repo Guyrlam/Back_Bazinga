@@ -1,0 +1,38 @@
+name: Node.js CI
+
+on: [push,pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: '18.x'
+
+      - name: Redis Server in GitHub Actions
+        uses: supercharge/redis-github-action@1.5.0
+        with:
+          redis-version: '6'
+          redis-port: 6379
+
+      - name: MongoDB in GitHub Actions
+        uses: supercharge/mongodb-github-action@1.9.0
+        with:
+          mongodb-version: '6.0'
+          mongodb-port: 27017
+
+      
+      - name: Install Package
+        working-directory: ./backend
+        run: npm install
+      - name: Build Application
+        working-directory: ./backend
+        run: npm run build
+      - name: Test Application
+        working-directory: ./backend
+        run: npm run test:ci

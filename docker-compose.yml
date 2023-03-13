@@ -4,6 +4,14 @@ services:
         image: mongo:6
         ports:
             - 27000:27017
+    redis:
+        image: redis:latest
+        command: --port 6380
+        ports:
+            - 6380:6380
+        expose:
+            - 6380
+        restart: always
     backend-bazinga:
         build: backend
         command: npm run dev
@@ -11,13 +19,17 @@ services:
             - 4000:4000
         environment:
             URL_MONGO: mongodb
+            URL_REDIS: redis://redis:6380
             PORT: 4000
+            SALT_HASH: $$2a$$12$$E2hNcmrZaME97zOAUBFPye.9wEJiAVHJ0BhazUjJd9xDQkto6b8w6
         volumes:
           - ./backend:/src/
           - nodemodules:/src/node_modules
         links:
             - mongodb
+            - redis
         depends_on:
             - mongodb
+            - redis
 volumes:
     nodemodules: {}
