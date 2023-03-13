@@ -1,6 +1,6 @@
 name: Node.js CI
 
-on: [push]
+on: [push,pull_request]
 
 jobs:
   build:
@@ -35,6 +35,9 @@ jobs:
           mongodb-port: 27017
           
       - run: cd backend
-      - run: cd backend && npm install
-      - run: cd backend && npm run build
-      - run: cd backend && npm run test:ci
+      - name: Install Package
+        run: cd backend && npm install
+      - name: Build Application
+        run: cd backend && npm run build
+      - name: Test Application
+        run: cd backend && npm run test
