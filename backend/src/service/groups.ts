@@ -1,3 +1,4 @@
+import { Console } from "console";
 import { IGroup } from "../interface";
 import GroupDB from "../models/groups";
 const db = new GroupDB();
@@ -29,8 +30,8 @@ class GroupServ {
     }
     async updateGroup(_data: IGroup, _groupID: string, _id: string) {
         try {
-            const group: IGroup = await db.getGroupByID(_groupID);
-            if(group.leader_id !== _id) throw new Error("Não Autorizado")
+            const group: IGroup[] = await db.getGroupByID(_groupID);
+            if(group[0].leader_id !== _id) throw new Error("Não Autorizado")
 
             const updateGroup = await db.updateGroup(_data, _groupID);
             return updateGroup;
@@ -40,8 +41,8 @@ class GroupServ {
     }
     async deleteGroup(_groupID: string, _id: string) {
         try {
-            const group: IGroup = await db.getGroupByID(_groupID);
-            if(group.leader_id !== _id) throw new Error("Não Autorizado")
+            const group: IGroup[] = await db.getGroupByID(_groupID);
+            if(group[0].leader_id !== _id) throw new Error("Não Autorizado")
 
             const deleteGroup = await db.deleteGroup(_groupID);
             return deleteGroup;

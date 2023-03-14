@@ -13,7 +13,7 @@ interface IGroup {
     image_path: string
     created_at?: Date;
     updated_at?: Date;
-    deleted_at?: Date;
+    deleted_at?: Date | null;
 }
 
 
