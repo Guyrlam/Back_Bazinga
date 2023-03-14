@@ -39,6 +39,14 @@ class PostDB{
             throw err;
         }
     }
+    async findByIdCreator(id: string) {
+        try{
+            const data = await this.post.findOne({ id_creator: id });
+            return data;
+        } catch (err: any) {
+            throw err;
+        }
+    }
     async findById(id: string) {
         try{
             const data = await this.post.findOne({ _id: id });

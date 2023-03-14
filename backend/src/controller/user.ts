@@ -35,7 +35,7 @@ class UserControl{
                 nick: user.nick,
                 email: user.email
             }, salt, { expiresIn: '1h' })
-            
+            res.cookie('token', token, { maxAge: 1000*60*60, httpOnly: true });
             res.json({
                 auth: true,
                 token: token

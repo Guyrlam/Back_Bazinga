@@ -1,8 +1,8 @@
-import { salt } from "../config";
 import { IComment, ILogin, IPost, IUser } from "../interface";
 import PostDB from "../models/post";
-import bcrypt from 'bcrypt';
+import UserDB from "../models/user";
 const db = new PostDB();
+const dbUser = new UserDB();
 
 class PostServ{
     async removePost(post_id: string, id: string) {
@@ -45,6 +45,23 @@ class PostServ{
     async getId(id:string) {
         try {
             const posts = await db.findById(id);
+            return posts;
+        } catch (err: any) {
+            throw {err,status:400};
+        }
+    }
+    async getToNick(nick: string) {
+        try {
+            const user = await dbUser.getByNick(nick);
+            const posts = await db.findByIdCreator(user._id)
+            return posts;
+        } catch (err: any) {
+            throw {err,status:400};
+        }
+    }
+    async getMy(id: string) {
+        try {
+            const posts = await db.findByIdCreator(id);
             return posts;
         } catch (err: any) {
             throw {err,status:400};

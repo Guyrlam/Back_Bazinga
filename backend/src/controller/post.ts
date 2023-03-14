@@ -75,7 +75,27 @@ class PostControl{
             post.id_creator=token._id
             validatePost(post);
             const dt = await service.create(post);
+            (req as CustomRequest).io.emit("post", dt);
             res.json(dt);
+        } catch (err: any) {
+            console.log(err);
+            apiResponse.error(res,err.err,err.status)
+        }
+    }
+    async getToNick(req: Request, res: Response) {
+        try {;
+            const data = await service.getToNick(req.params.nick); 
+            res.json(data);
+        } catch (err: any) {
+            console.log(err);
+            apiResponse.error(res,err.err,err.status)
+        }
+    }
+    async getMy(req: Request, res: Response) {
+        try {
+            const token: any = (req as CustomRequest).token;
+            const data = await service.getMy(token._id); 
+            res.json(data);
         } catch (err: any) {
             console.log(err);
             apiResponse.error(res,err.err,err.status)
