@@ -60,7 +60,13 @@ export default class App {
         this.app.use(cookieParser());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
-        this.app.use(cors(corsOptions));
+        this.app.use((req, res, next) => {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "*");
+            res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE');
+            this.app.use(cors());
+            next();
+        });
         this.app.use((req: Request, res: Response, next: NextFunction) => {
             (req as CustomRequest).io = this.io;
             return next();
