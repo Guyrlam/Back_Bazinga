@@ -17,6 +17,7 @@ class GroupControl {
                 messages: [],
                 created_at: new Date(),
                 image_path: req.body.image_path || "",
+                deleted_at: null,
             };
             const dt = await service.register(groupData);
             res.json(dt);
