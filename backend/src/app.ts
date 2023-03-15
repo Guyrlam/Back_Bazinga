@@ -40,7 +40,6 @@ export default class App {
         redisClient.on("connect", function (err: any) {
             console.log("=====Conexão REDIS estabelecida com sucesso=====");
         });
-        console.log(urlMongo)
         if (/@/gm.test(urlMongo)) {
             mongoose.connect(`mongodb+srv://${urlMongo}/bazinga`);
         } else {
