@@ -1,66 +1,142 @@
+import MiniSearch from "minisearch";
 import { salt } from "../config";
-import { ILogin, IUser } from "../interface";
+import { ILogin, IUser, IUserUpd } from "../interface";
 import UserDB from "../models/user";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 const db = new UserDB();
 
-class UserServ{
+class UserServ {
     async register(_data: IUser) {
         try {
-            const findByEmail = await db.getByEmail(_data.email)
-            const findByNick = await db.getByNick(_data.nick)
+            const findByEmail = await db.getByEmail(_data.email);
+            const findByNick = await db.getByNick(_data.nick);
             if (findByEmail.length) {
                 throw new Error("Este email já esta cadastrado");
             }
             if (findByNick.length) {
                 throw new Error("Este Nick já esta cadastrado");
             }
-            _data.password = await hashPassword(_data.password) as string;
-            const user = await db.register(_data)
+            _data.password = (await hashPassword(_data.password)) as string;
+            const user = await db.register(_data);
             return user;
         } catch (err: any) {
-            throw {err,status:400};
+            throw { err, status: 400 };
         }
     }
-    async login(_user:ILogin) {
+    async update(id: string, _data: IUserUpd) {
+        try {
+            let findByEmail:any = [];
+            let findByNick:any = [];
+            if (_data.email){
+                findByEmail = await db.getByEmail(_data.email);
+            }
+            if (_data.nick){
+                findByNick = await db.getByNick(_data.nick);
+            }
+            if (findByEmail.length) {
+                throw new Error("Este email já esta cadastrado");
+            }
+            if (findByNick.length) {
+                throw new Error("Este Nick já esta cadastrado");
+            }
+            if (_data.password) {
+                _data.password = (await hashPassword(_data.password)) as string;
+            }
+            const user = await db.update(id,_data);
+            return user;
+        } catch (err: any) {
+            throw { err, status: 400 };
+        }
+    }
+    async login(_user: ILogin) {
         try {
             let user;
-            const findByEmail = await db.getByEmail(_user.email || "")
-            const findByNick = await db.getByNick(_user.nick || "")
+            const findByEmail = await db.getByEmail(_user.email || "");
+            const findByNick = await db.getByNick(_user.nick || "");
 
             if (findByEmail.length) {
                 user = findByEmail[0];
-            }else if (findByNick.length) {
+            } else if (findByNick.length) {
                 user = findByNick[0];
             } else {
                 if (_user.email) {
-                    throw new Error("Email não cadastrado")
+                    throw new Error("Email não cadastrado");
                 }
                 if (_user.nick) {
-                    throw new Error("Nick não cadastrado")
+                    throw new Error("Nick não cadastrado");
                 }
             }
-            let isEqualPassword = await comparePassword(_user.password, user.password);
+            let isEqualPassword = await comparePassword(
+                _user.password,
+                user.password
+            );
             if (isEqualPassword) {
                 return user;
             } else {
-                throw new Error("Senha inválida")
+                throw new Error("Senha inválida");
             }
         } catch (err: any) {
-            throw {err,status:400};
+            throw { err, status: 400 };
         }
     }
     async getAll() {
         try {
-            const users = await db.getAll()
+            let users = await db.getAll();
+            users = users.map(({ _id, name, nick, email }: any) => {
+                return {_id, name, nick,email};
+            });
             return users;
         } catch (err: any) {
-            throw {err,status:404};
+            throw { err, status: 404 };
+        }
+    }
+    async getId(id: string) {
+        try {
+            const user = await db.getById(id);
+            return user;
+        } catch (err: any) {
+            throw { err, status: 404 };
+        }
+    }
+    async delete(id: string) {
+        try {
+            const user = await db.removeId(id);
+            return user;
+        } catch (err: any) {
+            throw { err, status: 404 };
+        }
+    }
+    async search(text: string) {
+        try {
+            const users = await db.getAll();
+            let miniSearch = new MiniSearch({
+                fields: ["name", "nick", "email"],
+                storeFields: ["name", "nick", "email"],
+            });
+            miniSearch.addAll(users);
+            let results = miniSearch.search(text);
+            return results;
+        } catch (err: any) {
+            throw { err, status: 404 };
+        }
+    }
+    async suggest(text: string) {
+        try {
+            const users = await db.getAll();
+            let miniSearch = new MiniSearch({
+                fields: ["name", "nick", "email"],
+                storeFields: ["name", "nick", "email"],
+            });
+            miniSearch.addAll(users);
+            let results = miniSearch.autoSuggest(text);
+            return results;
+        } catch (err: any) {
+            throw { err, status: 404 };
         }
     }
 }
-async function hashPassword(plaintextPassword: string):Promise<string> {
-    const hash:string = await bcrypt.hash(plaintextPassword, salt);
+async function hashPassword(plaintextPassword: string): Promise<string> {
+    const hash: string = await bcrypt.hash(plaintextPassword, salt);
     return hash;
 }
 

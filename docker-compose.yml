@@ -1,9 +1,12 @@
 version: "3"
 services:
     mongodb:
-        image: mongo:6
+        image: mongo:latest
+        command: --port 27000
         ports:
-            - 27000:27017
+            - 27000:27000
+        expose:
+            - 27000
     redis:
         image: redis:latest
         command: --port 6380
@@ -14,17 +17,17 @@ services:
         restart: always
     backend-bazinga:
         build: backend
+        volumes:
+          - ./backend:/src/
+          - nodemodules:/src/node_modules
         command: npm run dev
         ports:
             - 4000:4000
         environment:
-            URL_MONGO: mongodb
+            URL_MONGO: mongodb:27000
             URL_REDIS: redis://redis:6380
             PORT: 4000
             SALT_HASH: $$2a$$12$$E2hNcmrZaME97zOAUBFPye.9wEJiAVHJ0BhazUjJd9xDQkto6b8w6
-        volumes:
-          - ./backend:/src/
-          - nodemodules:/src/node_modules
         links:
             - mongodb
             - redis
