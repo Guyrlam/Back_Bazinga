@@ -10,8 +10,8 @@ route.get('/api/posts/users/:nick', auth, ctrl.getToNick);
 route.get('/api/posts/:id', auth, ctrl.getId);
 route.delete('/api/posts/:id', auth, ctrl.removePost);
 
-route.post('/api/posts/:id/comment', auth, ctrl.addComment);
-route.post('/api/posts/:id/like', auth, ctrl.addLike);
-route.post('/api/posts/:id/dislike', auth, ctrl.removeLike);
+route.post("/api/posts/:id/comment", auth, ctrl.addComment);
+route.post("/api/posts/:id/like", auth, ctrl.addLike);
+route.post("/api/posts/:id/dislike", auth, ctrl.removeLike);
 
 export default route;
