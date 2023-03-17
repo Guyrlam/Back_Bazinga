@@ -7,6 +7,7 @@ export interface IComment {
 }
 
 export interface IPost {
+    img?: string;
     id_creator: string | Schema.Types.ObjectId;
     content: string;
     comments?: Array<IComment>;
