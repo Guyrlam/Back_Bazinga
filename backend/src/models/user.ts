@@ -1,6 +1,6 @@
 import { model } from 'mongoose';
 import { userSchema } from '../schema/userSchema';
-import { IUser } from '../interface';
+import { IUser, IUserUpd } from '../interface';
 
 class UserDB {
     user: any;
@@ -34,6 +34,27 @@ class UserDB {
     async getByNick(_nick: string) {
         try {
             const data = await this.user.find({ nick: _nick });
+            return data;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+    async update(_id: string, user: IUserUpd) {
+        try {
+            let dataUpt: IUserUpd = {};
+            if (user.email) dataUpt.email = user.email;
+            if (user.name) dataUpt.name = user.name;
+            if (user.nick) dataUpt.nick = user.nick;
+            if (user.password) dataUpt.password = user.password;
+            const data = await this.user.updateOne({ _id: _id }, dataUpt);
+            return data;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+    async getById(_id: string) {
+        try {
+            const data = await this.user.findById(_id);
             return data;
         } catch (err: any) {
             throw err;

@@ -41,10 +41,10 @@ export default class App {
         redisClient.on('connect', function (err: any) {
             console.log('=====Conexão REDIS estabelecida com sucesso=====');
         });
-        if (/localhost/gm.test(urlMongo)) {
-            mongoose.connect(`mongodb://${urlMongo}/bazinga`);
-        } else {
+        if (/@/gm.test(urlMongo)) {
             mongoose.connect(`mongodb+srv://${urlMongo}/bazinga`);
+        } else {
+            mongoose.connect(`mongodb://${urlMongo}/bazinga`);
         }
         mongoose.connection.on('connected', function () {
             console.log('=====Conexão MONGODB estabelecida com sucesso=====');

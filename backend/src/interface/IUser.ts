@@ -11,5 +11,13 @@ interface IUser {
     password: string;
     avatar?: string;
 }
+interface IUserUpd {
+    _id?: string;
+    name?: string;
+    nick?: string;
+    email?: string;
+    password?: string;
+    avatar?: string;
+}
 
-export { ILogin, IUser };
+export { ILogin, IUser, IUserUpd };
