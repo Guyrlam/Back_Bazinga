@@ -8,5 +8,5 @@ export {
     NameValidator,
     UUIDValidator,
     NickValidator,
-    ContentValidator
+    ContentValidator,
 } from './strings';

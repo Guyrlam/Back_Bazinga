@@ -9,7 +9,7 @@
     "build": "npx tsc",
     "test": "jest --coverage",
     "test:ci": "jest --ci --coverage --coverageReporters=html --coverageReporters=lcov --detectOpenHandles --forceExit",
-    "prettier-staged": "lint-staged"
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "author": "",
   "license": "ISC",
@@ -60,6 +60,7 @@
     "mongoose": "^7.0.0",
     "multer": "^1.4.5-lts.1",
     "multer-s3": "^3.0.1",
+    "prettier": "^2.8.4",
     "redis": "^4.6.5",
     "socket.io": "^4.6.1",
     "swagger-autogen": "^2.23.1",

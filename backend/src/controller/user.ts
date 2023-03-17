@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
-import UserServ from "../service/user";
-import { EmailValidator } from "../helpers/validator";
-import { LoginValidator, UpdateValidator, UserValidator } from "../validators/user";
-import { ILogin, IUser, IUserUpd } from "../interface";
-import APIResponse from "../util/apiResponse";
-import jwt from "jsonwebtoken";
-import { salt } from "../config";
-import { CustomRequest } from "../interface/IRequest";
+import { Request, Response } from 'express';
+import UserServ from '../service/user';
+import { EmailValidator } from '../helpers/validator';
+import { LoginValidator, UpdateValidator, UserValidator } from '../validators/user';
+import { ILogin, IUser, IUserUpd } from '../interface';
+import APIResponse from '../util/apiResponse';
+import jwt from 'jsonwebtoken';
+import { salt } from '../config';
+import { CustomRequest } from '../interface/IRequest';
 const service = new UserServ();
 const apiResponse = new APIResponse();
 
@@ -16,7 +16,7 @@ class UserControl {
             const token: any = (req as CustomRequest).token;
             const dt = await service.getId(token._id);
             res.json(dt);
-        } catch (err: any) { 
+        } catch (err: any) {
             console.log(err);
             apiResponse.error(res, err.err, err.status);
         }
@@ -25,7 +25,7 @@ class UserControl {
         try {
             const dt = await service.delete(req.params.id);
             res.json(dt);
-        } catch (err: any) { 
+        } catch (err: any) {
             console.log(err);
             apiResponse.error(res, err.err, err.status);
         }
@@ -43,7 +43,7 @@ class UserControl {
     }
     async logout(req: Request, res: Response) {
         try {
-            res.clearCookie("token");
+            res.clearCookie('token');
             res.json({
                 auth: false,
             });
@@ -68,9 +68,9 @@ class UserControl {
                     email: user.email,
                 },
                 salt,
-                { expiresIn: "1h" }
+                { expiresIn: '1h' }
             );
-            res.cookie("token", newtoken, {
+            res.cookie('token', newtoken, {
                 maxAge: 1000 * 60 * 60,
                 httpOnly: true,
             });
@@ -95,9 +95,9 @@ class UserControl {
                     email: user.email,
                 },
                 salt,
-                { expiresIn: "1h" }
+                { expiresIn: '1h' }
             );
-            res.cookie("token", token, {
+            res.cookie('token', token, {
                 maxAge: 1000 * 60 * 60,
                 httpOnly: true,
             });

@@ -20,5 +20,4 @@ interface IUserUpd {
     avatar?: string;
 }
 
-
-export { ILogin, IUser, IUserUpd }
+export { ILogin, IUser, IUserUpd };
