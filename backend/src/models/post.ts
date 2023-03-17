@@ -53,7 +53,7 @@ class PostDB {
     }
     async findByIdCreator(id: string) {
         try {
-            const data = await this.post.findOne({ id_creator: id });
+            const data = await this.post.findOne({ id_creator: id }).lean().populate('id_creator').populate('likes').populate('comments.id_creator');
             return data;
         } catch (err: any) {
             throw err;
@@ -61,15 +61,15 @@ class PostDB {
     }
     async findById(id: string) {
         try {
-            const data = await this.post.findOne({ _id: id });
+            const data = await this.post.findOne({ _id: id }).lean().populate('id_creator').populate('likes').populate('comments.id_creator');
             return data;
         } catch (err: any) {
             throw err;
         }
     }
-    async findIdByLikes(id: string) {
+    async findIdByLikes(post_id: string, id: string) {
         try {
-            const data = await this.post.find({ likes: id });
+            const data = await this.post.find({ likes: { $all : [id] }, _id: post_id});
             return data;
         } catch (err: any) {
             throw err;
@@ -77,7 +77,7 @@ class PostDB {
     }
     async findAll() {
         try {
-            const data = await this.post.find({});
+            const data = await this.post.find({}).lean().populate('id_creator',);
             return data;
         } catch (err: any) {
             throw err;

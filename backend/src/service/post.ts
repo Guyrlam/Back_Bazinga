@@ -15,7 +15,7 @@ class PostServ {
     }
     async removeLike(post_id: string, id: string) {
         try {
-            await db.removeLike(post_id, id);
+            const log = await db.removeLike(post_id, id);
             const post = await db.findById(post_id);
             return post;
         } catch (err: any) {
@@ -24,8 +24,8 @@ class PostServ {
     }
     async addLike(post_id: string, id: string) {
         try {
-            let existPost = await db.findIdByLikes(post_id);
-            if (!existPost.length) throw new Error('Já existe seu like.');
+            let existPost: Array<any> = await db.findIdByLikes(post_id, id);
+            if (existPost.length) throw new Error('Já existe seu like.');
             await db.addLike(post_id, id);
             const post = await db.findById(post_id);
             return post;
@@ -61,7 +61,12 @@ class PostServ {
     }
     async getMy(id: string) {
         try {
-            const posts = await db.findByIdCreator(id);
+            const posts: Array<any> = await db.findByIdCreator(id);
+            // posts.map((post: any) => {
+            //     return {
+                    
+            //     };
+            // })
             return posts;
         } catch (err: any) {
             throw { err, status: 400 };
