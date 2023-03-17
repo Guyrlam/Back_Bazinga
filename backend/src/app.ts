@@ -6,9 +6,10 @@ import route from "./router";
 import mongoose from "mongoose";
 import { RedisClientType, createClient } from "redis";
 import { createServer } from "http";
-import Socketio, { Server } from "socket.io";
+import { Server } from "socket.io";
 import { CustomRequest } from "./interface/IRequest";
-
+import path from "path";
+import wsConnection from "./websockets/index";
 
 export default class App {
     app: express.Application;
@@ -16,13 +17,13 @@ export default class App {
     io: any;
     constructor() {
         this.app = express();
+        /* this.app.use(express.static(path.join(__dirname, "..", "public"))); */
         this.server = createServer(this.app);
-        this.io = new Server(this.server)
+        this.io = new Server(this.server);
         this.database();
         this.webSocket();
         this.middlewares();
         this.routes();
-        
 
         this.server.listen(4000, () =>
             console.log(`Servidor rodando em: http://localhost:${port}`)
@@ -63,7 +64,7 @@ export default class App {
         this.app.use((req, res, next) => {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "*");
-            res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE');
+            res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
             this.app.use(cors());
             next();
         });
@@ -73,15 +74,8 @@ export default class App {
         });
     }
     webSocket() {
-        this.io.on('connection', (socket: any) => {
-            socket.on('post', (msg:any) => {
-                this.io.emit('post', msg);
-            });
-            socket.on('disconnect', () => {
-                this.io.emit('chat message', "TCHAU");
-                console.log('user disconnected');
-            });
-            console.log(socket.handshake.headers.auth);
+        this.io.on("connection", (socket: any) => {
+            wsConnection(socket, this.io);
         });
     }
 
@@ -89,6 +83,5 @@ export default class App {
         this.app.use(route.users);
         this.app.use(route.posts);
         this.app.use(route.groups);
-
     }
 }

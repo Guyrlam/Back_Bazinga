@@ -1,6 +1,7 @@
 import { model } from "mongoose";
 import { groupSchema } from "../schema/groupSchema";
 import { IGroup } from "../interface";
+import { IMessages } from "../interface/IGroup";
 
 class GroupDB {
     group: any;
@@ -64,6 +65,21 @@ class GroupDB {
                 {
                     $set: {
                         deleted_at: new Date()
+                    },
+                }
+            );
+            return data;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+    async setMessage( _groupID: string, _data: IMessages) {
+        try {
+            const data = await this.group.updateOne(
+                { _id: _groupID, deleted_at: null },
+                {
+                    $push: {
+                        messages: _data
                     },
                 }
             );

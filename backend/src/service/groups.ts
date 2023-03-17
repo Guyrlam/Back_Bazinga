@@ -1,4 +1,3 @@
-import { Console } from "console";
 import { IGroup } from "../interface";
 import GroupDB from "../models/groups";
 const db = new GroupDB();
