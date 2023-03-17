@@ -1,6 +1,6 @@
-import PostControl from "./post";
-import UserControl from "./user";
-import GroupControl from "./group";
+import PostControl from './post';
+import UserControl from './user';
+import GroupControl from './group';
 
 const userCtrl = UserControl;
 const postCtrl = PostControl;

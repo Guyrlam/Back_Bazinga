@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
-import UserServ from "../service/user";
-import { EmailValidator } from "../helpers/validator";
-import { LoginValidator, UserValidator } from "../validators/user";
-import { ILogin, IUser } from "../interface";
-import APIResponse from "../util/apiResponse";
-import jwt from "jsonwebtoken";
-import { salt } from "../config";
-import { CustomRequest } from "../interface/IRequest";
+import { Request, Response } from 'express';
+import UserServ from '../service/user';
+import { EmailValidator } from '../helpers/validator';
+import { LoginValidator, UserValidator } from '../validators/user';
+import { ILogin, IUser } from '../interface';
+import APIResponse from '../util/apiResponse';
+import jwt from 'jsonwebtoken';
+import { salt } from '../config';
+import { CustomRequest } from '../interface/IRequest';
 const service = new UserServ();
 const apiResponse = new APIResponse();
 
@@ -36,9 +36,9 @@ class UserControl {
                     email: user.email,
                 },
                 salt,
-                { expiresIn: "1h" }
+                { expiresIn: '1h' }
             );
-            res.cookie("token", token, {
+            res.cookie('token', token, {
                 maxAge: 1000 * 60 * 60,
                 httpOnly: true,
             });
@@ -59,10 +59,10 @@ class UserControl {
                 const dt = await service.getAll();
                 res.json({ dt, token: (req as CustomRequest).token });
             } else {
-                throw { err: new Error("Não Autorizado"), status: 401 };
+                throw { err: new Error('Não Autorizado'), status: 401 };
             }
         } catch (err: any) {
-            console.log(header["Authorization"]);
+            console.log(header['Authorization']);
             console.log(err);
             apiResponse.error(res, err.err, err.status);
         }

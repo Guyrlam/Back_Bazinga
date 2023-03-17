@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { PostValidator } from "../validators/post";
-import { IComment, IPost } from "../interface";
-import APIResponse from "../util/apiResponse";
-import { CustomRequest } from "../interface/IRequest";
-import PostServ from "../service/post";
-import Redis from "ioredis";
+import { Request, Response } from 'express';
+import { PostValidator } from '../validators/post';
+import { IComment, IPost } from '../interface';
+import APIResponse from '../util/apiResponse';
+import { CustomRequest } from '../interface/IRequest';
+import PostServ from '../service/post';
+import Redis from 'ioredis';
 
 const service = new PostServ();
 const apiResponse = new APIResponse();
@@ -78,7 +78,7 @@ class PostControl {
             post.id_creator = token._id;
             validatePost(post);
             const dt = await service.create(post);
-            pub.publish("feed-update", JSON.stringify(dt));
+            pub.publish('feed-update', JSON.stringify(dt));
             res.json(dt);
         } catch (err: any) {
             console.log(err);

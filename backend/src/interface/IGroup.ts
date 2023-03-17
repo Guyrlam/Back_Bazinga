@@ -10,11 +10,10 @@ interface IGroup {
     leader_id?: string;
     members: string[];
     messages?: IMessages[];
-    image_path: string
+    image_path: string;
     created_at?: Date;
     updated_at?: Date;
     deleted_at?: Date | null;
 }
 
-
-export { IGroup, IMessages }
+export { IGroup, IMessages };

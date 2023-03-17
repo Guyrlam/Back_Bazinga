@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import GroupServ from "../service/groups";
-import { IGroup } from "../interface";
-import APIResponse from "../util/apiResponse";
-import { CustomRequest } from "../interface/IRequest";
+import { Request, Response } from 'express';
+import GroupServ from '../service/groups';
+import { IGroup } from '../interface';
+import APIResponse from '../util/apiResponse';
+import { CustomRequest } from '../interface/IRequest';
 const service = new GroupServ();
 const apiResponse = new APIResponse();
 
@@ -16,7 +16,7 @@ class GroupControl {
                 members: req.body.members,
                 messages: [],
                 created_at: new Date(),
-                image_path: req.body.image_path || "",
+                image_path: req.body.image_path || '',
                 deleted_at: null,
             };
             const dt = await service.register(groupData);
@@ -47,7 +47,7 @@ class GroupControl {
                 leader_id: (token as any)._id,
                 members: req.body.members,
                 updated_at: new Date(),
-                image_path: req.body.image_path || "",
+                image_path: req.body.image_path || '',
             };
 
             const userID = (token as any)._id;

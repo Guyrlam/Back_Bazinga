@@ -1,12 +1,12 @@
-import { model } from "mongoose";
-import { groupSchema } from "../schema/groupSchema";
-import { IGroup } from "../interface";
-import { IMessages } from "../interface/IGroup";
+import { model } from 'mongoose';
+import { groupSchema } from '../schema/groupSchema';
+import { IGroup } from '../interface';
+import { IMessages } from '../interface/IGroup';
 
 class GroupDB {
     group: any;
     constructor() {
-        this.group = model("Group", groupSchema);
+        this.group = model('Group', groupSchema);
     }
     async registerGroup(_data: IGroup) {
         try {
@@ -64,7 +64,7 @@ class GroupDB {
                 { _id: _groupID, deleted_at: null },
                 {
                     $set: {
-                        deleted_at: new Date()
+                        deleted_at: new Date(),
                     },
                 }
             );
@@ -73,13 +73,13 @@ class GroupDB {
             throw err;
         }
     }
-    async setMessage( _groupID: string, _data: IMessages) {
+    async setMessage(_groupID: string, _data: IMessages) {
         try {
             const data = await this.group.updateOne(
                 { _id: _groupID, deleted_at: null },
                 {
                     $push: {
-                        messages: _data
+                        messages: _data,
                     },
                 }
             );

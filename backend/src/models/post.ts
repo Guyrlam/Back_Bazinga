@@ -1,11 +1,11 @@
-import { model } from "mongoose";
-import { postSchema } from "../schema/postSchema";
-import { IComment, IPost } from "../interface";
+import { model } from 'mongoose';
+import { postSchema } from '../schema/postSchema';
+import { IComment, IPost } from '../interface';
 
 class PostDB {
     post: any;
     constructor() {
-        this.post = model("Post", postSchema);
+        this.post = model('Post', postSchema);
     }
     async removePost(post_id: string, id_user: string) {
         try {

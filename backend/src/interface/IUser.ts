@@ -12,5 +12,4 @@ interface IUser {
     avatar?: string;
 }
 
-
-export { ILogin, IUser }
+export { ILogin, IUser };
