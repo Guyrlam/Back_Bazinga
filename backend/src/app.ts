@@ -1,14 +1,15 @@
-import express, { NextFunction, Request, Response } from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import { corsOptions, port, urlMongo, urlRedis } from "./config";
-import route from "./router";
-import mongoose from "mongoose";
-import { RedisClientType, createClient } from "redis";
-import { createServer } from "http";
-import Socketio, { Server } from "socket.io";
-import { CustomRequest } from "./interface/IRequest";
-
+import express, { NextFunction, Request, Response } from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import { corsOptions, port, urlMongo, urlRedis } from './config';
+import route from './router';
+import mongoose from 'mongoose';
+import { RedisClientType, createClient } from 'redis';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import { CustomRequest } from './interface/IRequest';
+import path from 'path';
+import wsConnection from './websockets/index';
 
 export default class App {
     app: express.Application;
@@ -16,13 +17,13 @@ export default class App {
     io: any;
     constructor() {
         this.app = express();
+        /* this.app.use(express.static(path.join(__dirname, "..", "public"))); */
         this.server = createServer(this.app);
-        this.io = new Server(this.server)
+        this.io = new Server(this.server);
         this.database();
         this.webSocket();
         this.middlewares();
         this.routes();
-        
 
         this.server.listen(4000, () =>
             console.log(`Servidor rodando em: http://localhost:${port}`)
@@ -34,25 +35,25 @@ export default class App {
             url: urlRedis,
         });
         redisClient.connect();
-        redisClient.on("error", function (err: any) {
-            console.log("Could not establish a connection with redis. " + err);
+        redisClient.on('error', function (err: any) {
+            console.log('Could not establish a connection with redis. ' + err);
         });
-        redisClient.on("connect", function (err: any) {
-            console.log("=====Conexão REDIS estabelecida com sucesso=====");
+        redisClient.on('connect', function (err: any) {
+            console.log('=====Conexão REDIS estabelecida com sucesso=====');
         });
         if (/@/gm.test(urlMongo)) {
             mongoose.connect(`mongodb+srv://${urlMongo}/bazinga`);
         } else {
             mongoose.connect(`mongodb://${urlMongo}/bazinga`);
         }
-        mongoose.connection.on("connected", function () {
-            console.log("=====Conexão MONGODB estabelecida com sucesso=====");
+        mongoose.connection.on('connected', function () {
+            console.log('=====Conexão MONGODB estabelecida com sucesso=====');
         });
-        mongoose.connection.on("error", function (err: any) {
-            console.log("=====Ocorreu um erro: " + err);
+        mongoose.connection.on('error', function (err: any) {
+            console.log('=====Ocorreu um erro: ' + err);
         });
-        mongoose.connection.on("disconnected", function () {
-            console.log("=====Conexão finalizada=====");
+        mongoose.connection.on('disconnected', function () {
+            console.log('=====Conexão finalizada=====');
         });
     }
 
@@ -61,9 +62,9 @@ export default class App {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use((req, res, next) => {
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "*");
-            res.header("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE');
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Headers', '*');
+            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
             this.app.use(cors());
             next();
         });
@@ -74,14 +75,7 @@ export default class App {
     }
     webSocket() {
         this.io.on('connection', (socket: any) => {
-            socket.on('post', (msg:any) => {
-                this.io.emit('post', msg);
-            });
-            socket.on('disconnect', () => {
-                this.io.emit('chat message', "TCHAU");
-                console.log('user disconnected');
-            });
-            console.log(socket.handshake.headers.auth);
+            wsConnection(socket, this.io);
         });
     }
 
@@ -89,6 +83,5 @@ export default class App {
         this.app.use(route.users);
         this.app.use(route.posts);
         this.app.use(route.groups);
-
     }
 }

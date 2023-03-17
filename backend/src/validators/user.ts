@@ -1,5 +1,5 @@
-import * as validators from '../helpers/validator'
-import { ILogin,IUser, IUserUpd } from '../interface';
+import * as validators from '../helpers/validator';
+import { ILogin, IUser, IUserUpd } from '../interface';
 
 export class UserValidator extends validators.Validator {
     constructor(data: IUser) {
@@ -40,8 +40,8 @@ export class UserValidator extends validators.Validator {
 export class LoginValidator extends validators.Validator {
     constructor(data: ILogin) {
         super(data);
-        if(data.email) this.data.email = this.checkEmail(data.email);
-        if(data.nick) this.data.nick = this.checkNick(data.nick);
+        if (data.email) this.data.email = this.checkEmail(data.email);
+        if (data.nick) this.data.nick = this.checkNick(data.nick);
         this.data.password = this.checkPassword(data.password);
     }
 
@@ -74,10 +74,10 @@ export class LoginValidator extends validators.Validator {
 export class UpdateValidator extends validators.Validator {
     constructor(data: IUserUpd) {
         super(data);
-        if(data.email) this.data.email = this.checkEmail(data.email);
-        if(data.nick) this.data.nick = this.checkNick(data.nick);
-        if(data.name) this.data.name = this.checkUserName(data.name);
-        if(data.password) this.data.password = this.checkPassword(data.password);
+        if (data.email) this.data.email = this.checkEmail(data.email);
+        if (data.nick) this.data.nick = this.checkNick(data.nick);
+        if (data.name) this.data.name = this.checkUserName(data.name);
+        if (data.password) this.data.password = this.checkPassword(data.password);
     }
 
     checkEmail(email: string) {

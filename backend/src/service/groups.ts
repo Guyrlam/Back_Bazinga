@@ -1,6 +1,5 @@
-import { Console } from "console";
-import { IGroup } from "../interface";
-import GroupDB from "../models/groups";
+import { IGroup } from '../interface';
+import GroupDB from '../models/groups';
 const db = new GroupDB();
 
 class GroupServ {
@@ -8,7 +7,7 @@ class GroupServ {
         try {
             const findByName = await db.getGroupByName(_data.name);
             if (findByName.length) {
-                throw new Error("Este grupo já esta cadastrado");
+                throw new Error('Este grupo já esta cadastrado');
             }
             const group = await db.registerGroup(_data);
             return group;
@@ -20,8 +19,7 @@ class GroupServ {
         try {
             const groups = await db.getGroups();
             const myGroups = groups.filter(
-                (el: IGroup) =>
-                    el.members.includes(_data) || el.leader_id === _data
+                (el: IGroup) => el.members.includes(_data) || el.leader_id === _data
             );
             return myGroups;
         } catch (err: any) {
@@ -31,7 +29,7 @@ class GroupServ {
     async updateGroup(_data: IGroup, _groupID: string, _id: string) {
         try {
             const group: IGroup[] = await db.getGroupByID(_groupID);
-            if(group[0].leader_id !== _id) throw new Error("Não Autorizado")
+            if (group[0].leader_id !== _id) throw new Error('Não Autorizado');
 
             const updateGroup = await db.updateGroup(_data, _groupID);
             return updateGroup;
@@ -42,7 +40,7 @@ class GroupServ {
     async deleteGroup(_groupID: string, _id: string) {
         try {
             const group: IGroup[] = await db.getGroupByID(_groupID);
-            if(group[0].leader_id !== _id) throw new Error("Não Autorizado")
+            if (group[0].leader_id !== _id) throw new Error('Não Autorizado');
 
             const deleteGroup = await db.deleteGroup(_groupID);
             return deleteGroup;
