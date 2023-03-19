@@ -1,0 +1,364 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Bazinga CRUD",
+        "description": "My User Project Application API",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "localhost:4000",
+    "basePath": "/api/",
+    "tags": [
+        {
+            "name": "Users",
+            "description": "API for users in the system"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "components": {
+        "securitySchemes": {
+            "Authorization": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "definitions": {
+        "Login":{
+            "required": [
+                "password"
+            ],
+            "properties":{
+                "nick":{
+                    "type": "string"
+                },
+                "email":{
+                    "type": "string"
+                },
+                "password":{
+                    "type": "string"
+                }
+            }
+        },
+        "Auth":{
+            "properties":{
+                "auth":{
+                    "type": "boolean"
+                },
+                "token":{
+                    "type": "string"
+                }
+            }
+        },
+        "User": {
+            "required": [
+                "name",
+                "email",
+                "nick",
+                "password"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "nick": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "password":{
+                    "type":"string"
+                },
+                "avatar":{
+                    "type":"string"
+                }
+            }
+        },
+        "Error": {
+            "properties":{
+                "message":{
+                    "type": "string"
+                }
+            }
+        },
+        "Users": {
+            "type": "array",
+            "$ref": "#/definitions/User"
+        }
+    },
+    "components":{
+        "responses":{
+            "UnauthorizedError":{
+                "description": "Access token is missing or invalid",
+                "schema":{
+                    "$ref":"#/definitions/Error"
+                }
+            }
+        }
+    },
+
+    "paths": {
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "type": "string",
+                        "required": false
+                    }
+                ],
+                "summary": "acessar dos usuários existentes do sistema",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Users"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    }
+                ],
+                "summary": "acessa os dados do proprio usuario",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "description": "Atualiza o Registro do Usuario",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Usuario que deseja Atualizar seus dados no sistema",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        },
+        "/users/suggestion/{search}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Mostra sugestões de usuarios que esteja procurando",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "search",
+                        "in": "path",
+                        "description": "Usuario que deseja procurar"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        },
+
+
+        "/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Permite o login do Usuario",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Usuario que deseja logar",
+                        "schema": {
+                            "$ref": "#/definitions/Login"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/Auth"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/logout": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Permite o usuario sair do sistema",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        },
+        "/users/register": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Permite o Registro do Usuario",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Usuario que deseja se registrar no sistema",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        },
+
+        
+        "/users/{id}": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Deleta todos os dados do usuario no sistema",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id do Usuario",
+                        "required": true
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        }
+
+    }
+}

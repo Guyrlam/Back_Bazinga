@@ -8,8 +8,13 @@ import { RedisClientType, createClient } from 'redis';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { CustomRequest } from './interface/IRequest';
-import path from 'path';
+import swaggerUi from 'swagger-ui-express'
 import wsConnection from './websockets/index';
+const swaggerFile = require('../swagger.json');
+
+let redisClient: RedisClientType = createClient({
+    url: urlRedis,
+});
 
 export default class App {
     app: express.Application;
@@ -64,7 +69,7 @@ export default class App {
         this.app.use((req, res, next) => {
             res.header('Access-Control-Allow-Origin', '*');
             res.header('Access-Control-Allow-Headers', '*');
-            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
             this.app.use(cors());
             next();
         });
@@ -72,6 +77,11 @@ export default class App {
             (req as CustomRequest).io = this.io;
             return next();
         });
+        this.app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+    }
+    close() {
+        mongoose.disconnect();
+        (redisClient as any).disconnect();
     }
     webSocket() {
         this.io.on('connection', (socket: any) => {

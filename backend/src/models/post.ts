@@ -18,6 +18,16 @@ class PostDB {
             throw err;
         }
     }
+    async removePostByIdCreator(id_user: string) {
+        try {
+            const data = await this.post.deleteMany({
+                id_creator: id_user,
+            });
+            return data;
+        } catch (err: any) {
+            throw err;
+        }
+    }
     async removeLike(post_id: string, id: string) {
         try {
             const data = await this.post.updateOne(
