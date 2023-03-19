@@ -2,8 +2,10 @@ import MiniSearch from 'minisearch';
 import { salt } from '../config';
 import { ILogin, IUser, IUserUpd } from '../interface';
 import UserDB from '../models/user';
+import PostDB from '../models/post';
 import bcrypt from 'bcrypt';
 const db = new UserDB();
+const dbPosts = new PostDB();
 
 class UserServ {
     async register(_data: IUser) {
@@ -100,6 +102,7 @@ class UserServ {
     }
     async delete(id: string) {
         try {
+            await dbPosts.removePostByIdCreator(id);
             const user = await db.removeId(id);
             return user;
         } catch (err: any) {
@@ -109,13 +112,19 @@ class UserServ {
     async search(text: string) {
         try {
             const users = await db.getAll();
+            let users_find : Array<any> =[];
             let miniSearch = new MiniSearch({
                 fields: ['name', 'nick', 'email'],
                 storeFields: ['name', 'nick', 'email'],
             });
             miniSearch.addAll(users);
             let results = miniSearch.search(text);
-            return results;
+            for (let i = 0; i < results.length; i++) {
+                let user = await db.getById(results[i].id)
+                users_find[i] = user;
+                
+            }
+            return users_find;
         } catch (err: any) {
             throw { err, status: 404 };
         }

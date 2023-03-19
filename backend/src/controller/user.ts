@@ -70,6 +70,7 @@ class UserControl {
                 salt,
                 { expiresIn: '1h' }
             );
+            res.clearCookie('token');
             res.cookie('token', newtoken, {
                 maxAge: 1000 * 60 * 60,
                 httpOnly: true,
