@@ -9,24 +9,32 @@ const db = new GroupDB();
 const pubError = new Redis();
 const pubMessage = new Redis();
 const sub = new Redis();
+let count = 0;
+
+const wsAuth = async (token: string, group_id: string) => {
+    const decoded = jwt.verify(token as string, salt) as JwtPayload;
+    const user_id = decoded._id;
+    const group: IGroup[] = await db.getGroupByID(group_id);
+
+    if (!group[0].members.includes(user_id) && group[0].leader_id !== user_id) {
+        throw new Error('Não autorizado!');
+    }
+
+    return { decoded, group: group[0] };
+};
 
 export default (socket: any, io: any) => {
     socket.on('select_group', async (data: { group_id: string }, callback: any) => {
         try {
-            const token = socket.handshake.headers.cookie.slice(6);
-            const decoded = jwt.verify(token as string, salt) as JwtPayload;
-            const user_id = decoded._id;
-            const group: IGroup[] = await db.getGroupByID(data.group_id);
-            if (
-                !group[0].members.includes(user_id) &&
-                group[0].leader_id !== user_id
-            ) {
-                throw new Error('Não autorizado!');
-            }
+            const token =
+                socket.handshake.headers.token ||
+                socket.handshake.headers.cookie.slice(6);
+
+            const verify = await wsAuth(token, data.group_id);
 
             socket.join(data.group_id);
 
-            const chanelMessages = group[0].messages;
+            const chanelMessages = verify.group.messages;
 
             callback(chanelMessages);
         } catch (error: any) {
@@ -41,19 +49,14 @@ export default (socket: any, io: any) => {
 
     socket.on('message', async (data: { group_id: string; message: string }) => {
         try {
-            const token = socket.handshake.headers.cookie.slice(6);
-            const decoded = jwt.verify(token as string, salt) as JwtPayload;
-            const user_id = decoded._id;
-            const group: IGroup[] = await db.getGroupByID(data.group_id);
-            if (
-                !group[0].members.includes(user_id) &&
-                group[0].leader_id !== user_id
-            ) {
-                throw new Error('Não autorizado!');
-            }
+            const token =
+                socket.handshake.headers.token ||
+                socket.handshake.headers.cookie.slice(6);
+
+            const verify = await wsAuth(token, data.group_id);
 
             const message: IMessages = {
-                username: decoded.nick,
+                username: verify.decoded.nick,
                 text: data.message,
                 created_at: new Date(),
             };
@@ -67,6 +70,8 @@ export default (socket: any, io: any) => {
                     group: data.group_id,
                 })
             );
+
+            count = 0;
         } catch (error: any) {
             pubError.publish(
                 'error',
@@ -89,16 +94,21 @@ export default (socket: any, io: any) => {
 
     sub.on('message', (channel, _data) => {
         try {
-            if (channel === 'error') {
-                const { error } = JSON.parse(_data);
-                io.emit('error', { error });
-            }
-            if (channel === 'message') {
-                const { message, group } = JSON.parse(_data);
-                io.to(group).emit('message', message);
-            }
-            if (channel === 'feed-update') {
-                socket.emit('feed-update', JSON.parse(_data));
+            switch (channel) {
+                case 'error':
+                    const { error } = JSON.parse(_data);
+                    io.emit('error', { error });
+                    break;
+
+                case 'message':
+                    const { message, group } = JSON.parse(_data);
+                    count === 0 && io.to(group).emit('message', message);
+                    count++
+                    break;
+
+                case 'feed-update':
+                    socket.emit('feed-update', JSON.parse(_data));
+                    break;
             }
         } catch (error: any) {
             console.log(error.message);
