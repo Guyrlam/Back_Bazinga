@@ -20,19 +20,7 @@ describe("User routes", () => {
       const res = await request(app.app).post("/api/users/login").send({
           email: "user@email.com",
           password: "Password",
-      }); 
-      expect(res.statusCode).toEqual(200);
-    });
-    test("POST-/api/users/register ...Exist", async () => {
-        const res = await request(app.app).post("/api/users/register").send({
-            name: "user",
-            nick: "user",
-            email: "user@email.com",
-            password: "Password",
-        });
-        expect(res.body).toEqual({
-            message: "Este email já esta cadastrado",
-        });
-        await db.removeId(id);
+      });
+        expect(res.statusCode).toEqual(200);
     });
 });

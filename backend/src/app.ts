@@ -12,10 +12,6 @@ import swaggerUi from 'swagger-ui-express'
 import wsConnection from './websockets/index';
 const swaggerFile = require('../swagger.json');
 
-let redisClient: RedisClientType = createClient({
-    url: urlRedis,
-});
-
 export default class App {
     app: express.Application;
     server: any;
@@ -30,7 +26,7 @@ export default class App {
         this.middlewares();
         this.routes();
 
-        this.server.listen(4000, () =>
+        this.server.listen(port, () =>
             console.log(`Servidor rodando em: http://localhost:${port}`)
         );
     }
@@ -77,11 +73,10 @@ export default class App {
             (req as CustomRequest).io = this.io;
             return next();
         });
-        this.app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+        this.app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerFile))
     }
     close() {
         mongoose.disconnect();
-        (redisClient as any).disconnect();
     }
     webSocket() {
         this.io.on('connection', (socket: any) => {
