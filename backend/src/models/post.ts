@@ -87,7 +87,7 @@ class PostDB {
     }
     async findAll() {
         try {
-            const data = await this.post.find({}).lean().populate('id_creator',);
+            const data = await this.post.find({}).lean().populate('id_creator').populate('likes').populate('comments.id_creator');
             return data;
         } catch (err: any) {
             throw err;
