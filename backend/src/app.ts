@@ -73,7 +73,7 @@ export default class App {
             (req as CustomRequest).io = this.io;
             return next();
         });
-        this.app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+        this.app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
     }
     close() {
         mongoose.disconnect();
