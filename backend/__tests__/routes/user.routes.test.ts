@@ -30,9 +30,7 @@ describe("User routes", () => {
             email: "user@email.com",
             password: "Password",
         });
-        expect(res.body).toEqual({
-            message: "Este email já esta cadastrado",
-        });
+        expect(res.statusCode).toEqual(400);
         await db.removeId(id);
     });
 });
