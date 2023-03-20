@@ -93,5 +93,6 @@ export default class App {
         this.app.use(route.users);
         this.app.use(route.posts);
         this.app.use(route.groups);
+        this.app.use(route.uploads);
     }
 }
