@@ -61,7 +61,7 @@ class PostServ {
     }
     async getMy(id: string) {
         try {
-            const posts: Array<any> = await db.findByIdCreator(id);
+            const posts = await db.findByIdCreator(id);
             // posts.map((post: any) => {
             //     return {
                     
