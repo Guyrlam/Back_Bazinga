@@ -20,7 +20,7 @@ describe("User routes", () => {
       const res = await request(app.app).post("/api/users/login").send({
           email: "user@email.com",
           password: "Password",
-      }); 
+      });
         expect(res.statusCode).toEqual(200);
     });
 });
