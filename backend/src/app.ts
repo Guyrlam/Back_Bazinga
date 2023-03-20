@@ -12,10 +12,6 @@ import swaggerUi from 'swagger-ui-express'
 import wsConnection from './websockets/index';
 const swaggerFile = require('../swagger.json');
 
-let redisClient: RedisClientType = createClient({
-    url: urlRedis,
-});
-
 export default class App {
     app: express.Application;
     server: any;
@@ -81,7 +77,6 @@ export default class App {
     }
     close() {
         mongoose.disconnect();
-        (redisClient as any).disconnect();
     }
     webSocket() {
         this.io.on('connection', (socket: any) => {
