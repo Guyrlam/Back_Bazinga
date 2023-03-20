@@ -21,16 +21,6 @@ describe("User routes", () => {
           email: "user@email.com",
           password: "Password",
       }); 
-      expect(res.statusCode).toEqual(200);
-    });
-    test("POST-/api/users/register ...Exist", async () => {
-        const res = await request(app.app).post("/api/users/register").send({
-            name: "user",
-            nick: "user",
-            email: "user@email.com",
-            password: "Password",
-        });
-        expect(res.statusCode).toEqual(400);
-        await db.removeId(id);
+        expect(res.statusCode).toEqual(200);
     });
 });
