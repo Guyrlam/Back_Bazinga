@@ -30,7 +30,7 @@ export default class App {
         this.middlewares();
         this.routes();
 
-        this.server.listen(4000, () =>
+        this.server.listen(port, () =>
             console.log(`Servidor rodando em: http://localhost:${port}`)
         );
     }
@@ -77,7 +77,7 @@ export default class App {
             (req as CustomRequest).io = this.io;
             return next();
         });
-        this.app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+        this.app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerFile))
     }
     close() {
         mongoose.disconnect();
