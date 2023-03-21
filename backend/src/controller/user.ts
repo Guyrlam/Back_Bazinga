@@ -75,7 +75,10 @@ class UserControl {
                 maxAge: 1000 * 60 * 60,
                 httpOnly: true,
             });
-            res.json(user);
+            res.json({
+                auth: true,
+                token: newtoken,
+            });
         } catch (err: any) {
             console.log(err);
 
