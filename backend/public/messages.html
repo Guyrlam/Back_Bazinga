@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                width: auto;
+            }
+            main {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 30px;
+            }
+            #buttons {
+                display: flex;
+                gap: 5px;
+            }
+            #container {
+                min-width: 30vw;
+                min-height: 30vh;
+                border: solid 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <div id="container">
+                <p id="title"></p>
+                <div id="messages">
+                    
+                </div>
+            </div>
+            <div>
+                <input type="text" id="message_content" />
+            </div>
+                <button id="exit">Sair</button>
+        </main>
+    </body>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="messages.js"></script>
+</html>
