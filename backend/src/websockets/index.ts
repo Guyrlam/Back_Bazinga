@@ -24,63 +24,71 @@ const wsAuth = async (token: string, group_id: string) => {
 };
 
 export default (socket: any, io: any) => {
-    socket.on('select_group', async (data: { group_id: string }, callback: any) => {
-        try {
-            const token =
-                socket.handshake.headers.token ||
-                socket.handshake.headers.cookie.slice(6);
+    socket.on(
+        'select_group',
+        async (data: { group_id: string; token?: string }, callback: any) => {
+            try {
+                const token =
+                    data.token ||
+                    socket.handshake.headers.token ||
+                    socket.handshake.headers.cookie.slice(6);
 
-            const verify = await wsAuth(token, data.group_id);
+                const verify = await wsAuth(token, data.group_id);
 
-            socket.join(data.group_id);
+                socket.join(data.group_id);
 
-            const chanelMessages = verify.group.messages;
+                const chanelMessages = verify.group.messages;
 
-            callback(chanelMessages);
-        } catch (error: any) {
-            pubError.publish(
-                'error',
-                JSON.stringify({
-                    error: error.message,
-                })
-            );
+                callback(chanelMessages);
+            } catch (error: any) {
+                pubError.publish(
+                    'error',
+                    JSON.stringify({
+                        error: error.message,
+                    })
+                );
+            }
         }
-    });
+    );
 
-    socket.on('message', async (data: { group_id: string; message: string }) => {
-        try {
-            const token =
-                socket.handshake.headers.token ||
-                socket.handshake.headers.cookie.slice(6);
+    socket.on(
+        'message',
+        async (data: { group_id: string; message: string; token?: string }) => {
+            try {
+                const token =
+                    data.token ||
+                    socket.handshake.headers.token ||
+                    socket.handshake.headers.cookie.slice(6);
 
-            const verify = await wsAuth(token, data.group_id);
+                const verify = await wsAuth(token, data.group_id);
 
-            const message: IMessages = {
-                username: verify.decoded.nick,
-                text: data.message,
-                created_at: new Date(),
-            };
+                const message: IMessages = {
+                    username: verify.decoded.nick,
+                    text: data.message,
+                    created_at: new Date(),
+                };
 
-            await db.setMessage(data.group_id, message);
+                await db.setMessage(data.group_id, message);
 
-            pubMessage.publish(
-                'message',
-                JSON.stringify({
-                    message,
-                    group: data.group_id,
-                })
-            );
+                pubMessage.publish(
+                    'message',
+                    JSON.stringify({
+                        message,
+                        group: data.group_id,
+                    })
+                );
 
-            count = 0;
-        } catch (error: any) {
-            pubError.publish(
-                'error',
-                JSON.stringify({
-                    error: error.message,
-                })
-            );
+                count = 0;
+            } catch (error: any) {
+                pubError.publish(
+                    'error',
+                    JSON.stringify({
+                        error: error.message,
+                    })
+                );
+            }
         }
-    });
+    );
 
     sub.subscribe('error', 'message', 'feed-update', (err, count) => {
         if (err) {
@@ -103,7 +111,7 @@ export default (socket: any, io: any) => {
                 case 'message':
                     const { message, group } = JSON.parse(_data);
                     count === 0 && io.to(group).emit('message', message);
-                    count++
+                    count++;
                     break;
 
                 case 'feed-update':
