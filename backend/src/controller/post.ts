@@ -78,7 +78,7 @@ class PostControl {
             post.id_creator = token._id;
             validatePost(post);
             const dt = await service.create(post);
-            pub.publish('feed-update', JSON.stringify(dt));
+            pub.publish('posts', JSON.stringify(dt));
             res.json(dt);
         } catch (err: any) {
             console.log(err);

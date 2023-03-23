@@ -90,7 +90,7 @@ export default (socket: any, io: any) => {
         }
     );
 
-    sub.subscribe('error', 'message', 'feed-update', (err, count) => {
+    sub.subscribe('error', 'message', 'posts', (err, count) => {
         if (err) {
             console.error('Failed to subscribe: %s', err.message);
         } else {
@@ -114,8 +114,8 @@ export default (socket: any, io: any) => {
                     count++;
                     break;
 
-                case 'feed-update':
-                    socket.emit('feed-update', JSON.parse(_data));
+                case 'posts':
+                    socket.emit('posts', JSON.parse(_data));
                     break;
             }
         } catch (error: any) {
