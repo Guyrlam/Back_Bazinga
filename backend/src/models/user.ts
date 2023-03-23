@@ -25,7 +25,7 @@ class UserDB {
     }
     async getByEmail(_email: string) {
         try {
-            const data = await this.user.find({ email: _email });
+            const data = await this.user.findOne({ email: _email });
             return data;
         } catch (err: any) {
             throw err;
@@ -33,7 +33,7 @@ class UserDB {
     }
     async getByNick(_nick: string) {
         try {
-            const data = await this.user.find({ nick: _nick });
+            const data = await this.user.findOne({ nick: _nick });
             return data;
         } catch (err: any) {
             throw err;

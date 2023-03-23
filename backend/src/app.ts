@@ -10,6 +10,7 @@ import { Server } from 'socket.io';
 import { CustomRequest } from './interface/IRequest';
 import swaggerUi from 'swagger-ui-express'
 import wsConnection from './websockets/index';
+import path from 'path';
 const swaggerFile = require('../swagger.json');
 
 export default class App {
@@ -18,7 +19,7 @@ export default class App {
     io: any;
     constructor() {
         this.app = express();
-        /* this.app.use(express.static(path.join(__dirname, "..", "public"))); */
+        this.app.use(express.static(path.join(__dirname, "..", "public")));
         this.server = createServer(this.app);
         this.io = new Server(this.server);
         this.database();
