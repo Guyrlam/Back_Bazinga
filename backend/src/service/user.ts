@@ -12,10 +12,10 @@ class UserServ {
         try {
             const findByEmail = await db.getByEmail(_data.email);
             const findByNick = await db.getByNick(_data.nick);
-            if (findByEmail.length) {
+            if (findByEmail) {
                 throw new Error('Este email já esta cadastrado');
             }
-            if (findByNick.length) {
+            if (findByNick) {
                 throw new Error('Este Nick já esta cadastrado');
             }
             _data.password = (await hashPassword(_data.password)) as string;
@@ -55,8 +55,6 @@ class UserServ {
             let user:any;
             const findByEmail = await db.getByEmail(_user.email || '');
             const findByNick = await db.getByNick(_user.nick || '');
-            
-            console.log(findByNick);
             if (findByEmail) {
                 user = findByEmail;
             } else if (findByNick) {
