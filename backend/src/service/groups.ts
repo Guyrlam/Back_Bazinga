@@ -1,6 +1,9 @@
-import { IGroup } from '../interface';
+import { IGroup, IUser } from '../interface';
 import GroupDB from '../models/groups';
+import UserDB from '../models/user';
+
 const db = new GroupDB();
+const dbUser = new UserDB();
 
 class GroupServ {
     async register(_data: IGroup) {
@@ -21,7 +24,21 @@ class GroupServ {
             const myGroups = groups.filter(
                 (el: IGroup) => el.members.includes(_data) || el.leader_id === _data
             );
-            return myGroups;
+            const users = await dbUser.getAll();
+            const group = myGroups.map((el: any, i: number) => {
+                const newMembers = el.members.map((el: string) => {
+                    const newEl = users.filter(
+                        (element: IUser) => element._id?.toString() === el
+                    );
+                    return newEl[0];
+                });
+                const newgroup = {
+                    ...el._doc,
+                    members: newMembers
+                }
+                return newgroup
+            });
+            return group;
         } catch (err: any) {
             throw { err, status: 400 };
         }
