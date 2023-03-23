@@ -14,7 +14,11 @@
     "tags": [
         {
             "name": "Users",
-            "description": "API for users in the system"
+            "description": "API para Usuarios no sistema"
+        },
+        {
+            "name": "Posts",
+            "description": "API para Posts no sistema"
         }
     ],
     "schemes": [
@@ -36,6 +40,72 @@
         }
     },
     "definitions": {
+        "reqPost":{
+            "required": [
+                "content"
+            ],
+            "properties":{
+                "content":{
+                    "type": "string"
+                },
+                "img":{
+                    "type": "string"
+                }
+            }
+        },
+        "Post":{
+            "properties":{
+                "_id":{
+                    "type": "string"
+                },
+                "content":{
+                    "type": "string"
+                },
+                "id_creator":{
+                    "$ref": "#/definitions/User"
+                },
+                "img":{
+                    "type": "string"
+                },
+                "likes":{
+                    "type": "array",
+                    "$ref": "#/definitions/User"
+                },
+                "create_at":{
+                    "type": "string"
+                },
+                "comments":{
+                    "type": "array",
+                    "$ref": "#/definitions/Comment"
+                }
+            }
+        },
+        "reqComment":{
+            "required": [
+                "content"
+            ],
+            "properties":{
+                "content":{
+                    "type": "string"
+                }
+            }
+        },
+        "Comment":{
+            "properties":{
+                "content":{
+                    "type": "string"
+                },
+                "id_creator":{
+                    "$ref": "#/definitions/User"
+                },
+                "create_at":{
+                    "type": "string"
+                },
+                "_id":{
+                    "type": "string"
+                }
+            }
+        },
         "Login":{
             "required": [
                 "password"
@@ -113,6 +183,311 @@
     },
 
     "paths": {
+        "/posts":{
+            "get":{
+                "tags":[
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    }
+                ],
+                "summary": "acessar todos os Posts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema":{
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                }
+            },
+            "post":{
+                "tags": [
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "description": "Permite Criar um post",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "post",
+                        "in": "body",
+                        "description": "Criar Post",
+                        "schema": {
+                            "$ref": "#/definitions/reqPost"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema":{
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/my":{
+            "get":{
+                "tags":[
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    }
+                ],
+                "summary": "acessar todos os Posts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema":{
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/users/{nick}":{
+            "get":{
+                "tags":[
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "nick",
+                        "in": "path",
+                        "description": "Nick do Usuario",
+                        "required": true
+                    }
+                ],
+                "summary": "acessar todos os Posts de um Usuario em especifico",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema":{
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}":{
+            "get":{
+                "tags":[
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id Post",
+                        "required": true
+                    }
+                ],
+                "summary": "acessar um Post em especifico",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema":{
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                }
+            },
+            "delete":{
+                "tags":[
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id do Post",
+                        "required": true
+                    }
+                ],
+                "summary": "Deletar um Post em especifico",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema":{
+                            "$ref": "#/definitions/Post"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts/{id}/like":{
+            "post":{
+                "tags":[
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id Post",
+                        "required": true
+                    }
+                ],
+                "summary": "Adicionar like",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/posts/{id}/dislike":{
+            "post":{
+                "tags":[
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id Post",
+                        "required": true
+                    }
+                ],
+                "summary": "Remover like",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/posts/{id}/comment":{
+            "post":{
+                "tags":[
+                    "Posts"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "type": "string",
+                        "required": false
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id Post",
+                        "required": true
+                    },
+                    {
+                        "name": "comentario",
+                        "in": "body",
+                        "description": "Comentario",
+                        "schema": {
+                            "$ref": "#/definitions/reqComment"
+                        }
+                    }
+                ],
+                "summary": "Adicionar Comentario",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+
+
         "/users": {
             "get": {
                 "tags": [
