@@ -35,10 +35,10 @@ class UserServ {
             if (_data.nick) {
                 findByNick = await db.getByNick(_data.nick);
             }
-            if (findByEmail) {
+            if (findByEmail._id) {
                 throw new Error('Este email já esta cadastrado');
             }
-            if (findByNick) {
+            if (findByNick._id) {
                 throw new Error('Este Nick já esta cadastrado');
             }
             if (_data.password) {
